@@ -1,0 +1,1389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Collapse and Rebirth, Australia's Recorded Music Revenue 2011 to 2023</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://unpkg.com/scrollama@3.2.0/scrollama.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+  :root {
+    --bg-dark: #0c0a08;
+    --bg-card: rgba(255,80,40,0.04);
+    --bg-card-hover: rgba(255,100,50,0.08);
+    --card-border: rgba(255,120,60,0.10);
+    --card-border-hover: rgba(255,140,70,0.18);
+    --accent-green: #3690A4;
+    --accent-teal: #2D7A8C;
+    --accent-red: #E2443E;
+    --accent-gold: #E0944E;
+    --accent-blue: #3690A4;
+    --accent-orange: #E0944E;
+    --accent-purple: #C47A5A;
+    --text-primary: #F5EDD6;
+    --text-secondary: #C4B99A;
+    --text-muted: #7A7060;
+    --gradient-1: linear-gradient(135deg, #3690A4 0%, #2D7A8C 100%);
+    --gradient-2: linear-gradient(135deg, #E2443E 0%, #E0944E 100%);
+    --gradient-3: linear-gradient(135deg, #E0944E 0%, #E2443E 100%);
+    --glow-red: rgba(226,68,62,0.35);
+    --glow-gold: rgba(224,148,78,0.25);
+    --glow-teal: rgba(54,144,164,0.20);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', -apple-system, sans-serif;
+    background: var(--bg-dark);
+    color: var(--text-primary);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% 0%, rgba(226,68,62,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 50%, rgba(224,148,78,0.04) 0%, transparent 50%),
+      radial-gradient(ellipse 60% 40% at 20% 80%, rgba(54,144,164,0.03) 0%, transparent 50%);
+    background-attachment: fixed;
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at 50% 40%, rgba(226,68,62,0.15) 0%, transparent 45%),
+                radial-gradient(circle at 75% 25%, rgba(224,148,78,0.12) 0%, transparent 40%),
+                radial-gradient(circle at 25% 70%, rgba(54,144,164,0.08) 0%, transparent 40%),
+                radial-gradient(circle at 60% 80%, rgba(226,68,62,0.06) 0%, transparent 35%);
+    animation: heroGlow 15s ease-in-out infinite;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 500px;
+    height: 500px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(226,68,62,0.08) 0%, rgba(224,148,78,0.04) 40%, transparent 70%);
+    filter: blur(60px);
+    animation: heroOrb 10s ease-in-out infinite alternate;
+    pointer-events: none;
+  }
+
+  @keyframes heroGlow {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    33% { transform: translate(2%, -2%) rotate(1deg); }
+    66% { transform: translate(-1%, 1%) rotate(-0.5deg); }
+  }
+
+  @keyframes heroOrb {
+    0% { opacity: 0.4; transform: translate(-50%, -50%) scale(1); }
+    100% { opacity: 0.7; transform: translate(-50%, -50%) scale(1.2); }
+  }
+
+  .hero-content { position: relative; z-index: 1; }
+
+  .hero-eyebrow {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent-gold);
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.3s forwards;
+    text-shadow: 0 0 20px rgba(224,148,78,0.3);
+  }
+
+  .hero h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(2.5rem, 7vw, 5rem);
+    font-weight: 700;
+    line-height: 1.05;
+    margin-bottom: 1rem;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.5s forwards;
+  }
+
+  .hero h1 .collapse {
+    color: var(--accent-red);
+    text-shadow: 0 0 30px rgba(226,68,62,0.4), 0 0 60px rgba(226,68,62,0.15);
+  }
+  .hero h1 .rebirth {
+    color: var(--accent-green);
+    text-shadow: 0 0 30px rgba(54,144,164,0.4), 0 0 60px rgba(54,144,164,0.15);
+  }
+  .hero h1 .amp { color: var(--text-muted); font-weight: 400; }
+
+  .hero-sub {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    max-width: 500px;
+    margin: 0 auto;
+    line-height: 1.6;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.7s forwards;
+  }
+
+  .hero-sub strong { color: var(--text-primary); }
+
+  .scroll-indicator {
+    position: absolute;
+    bottom: 3rem;
+    opacity: 0;
+    animation: fadeUp 1s ease 1.2s forwards;
+  }
+
+  .scroll-indicator span {
+    display: block;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.8rem;
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 50px;
+    background: linear-gradient(to bottom, var(--accent-gold), rgba(226,68,62,0.3), transparent);
+    margin: 0 auto;
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 1; transform: scaleY(1); }
+    50% { opacity: 0.3; transform: scaleY(0.6); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== CONTEXT / INTRO SECTION ===== */
+  .context-section {
+    padding: 6rem 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .context-section h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+    font-weight: 700;
+    margin-bottom: 1.2rem;
+  }
+
+  .context-section .context-desc {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    line-height: 1.8;
+    margin-bottom: 3rem;
+  }
+
+  .context-section .context-desc strong { color: var(--text-primary); }
+
+  /* Timeline — Serpentine / Snaking Flow */
+  .timeline {
+    position: relative;
+    padding: 2rem 0;
+    max-width: 750px;
+    margin: 0 auto;
+  }
+
+  /* SVG connector path drawn behind items */
+  .timeline-path-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .timeline-path-svg path {
+    fill: none;
+    stroke: var(--accent-gold);
+    stroke-width: 2;
+    opacity: 0.20;
+    stroke-linecap: round;
+  }
+
+  .timeline-item {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 2rem;
+    margin-bottom: 3rem;
+    z-index: 1;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  .timeline-item.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Odd items: circle LEFT, text RIGHT */
+  .timeline-item:nth-child(odd) {
+    flex-direction: row;
+    text-align: left;
+    padding-left: 3%;
+    padding-right: 15%;
+  }
+
+  /* Even items: text LEFT, circle RIGHT */
+  .timeline-item:nth-child(even) {
+    flex-direction: row-reverse;
+    text-align: right;
+    padding-right: 3%;
+    padding-left: 15%;
+  }
+
+  .timeline-dot {
+    position: relative;
+    flex-shrink: 0;
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    z-index: 2;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.4);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .timeline-dot:hover {
+    transform: scale(1.10);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 25px rgba(226,68,62,0.25);
+  }
+
+  .timeline-content {
+    flex: 1;
+    padding: 0.6rem 0;
+    position: relative;
+    min-width: 0;
+  }
+
+  .timeline-content .tl-year {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.4rem;
+  }
+
+  .timeline-content .tl-event {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .context-cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+
+  .context-card {
+    background: rgba(255,80,40,0.03);
+    backdrop-filter: blur(28px) saturate(1.3);
+    -webkit-backdrop-filter: blur(28px) saturate(1.3);
+    border: 1px solid;
+    border-radius: 20px;
+    padding: 1.5rem;
+    flex: 1;
+    min-width: 200px;
+    max-width: 240px;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.35), 0 0 40px rgba(226,68,62,0.04);
+  }
+
+  .context-card .cc-icon {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .context-card .cc-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .context-card .cc-desc {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  @media (max-width: 600px) {
+    .timeline-item,
+    .timeline-item:nth-child(odd),
+    .timeline-item:nth-child(even) {
+      flex-direction: row;
+      text-align: left;
+      padding-left: 0;
+      padding-right: 0;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .timeline-dot {
+      width: 56px;
+      height: 56px;
+      font-size: 1rem;
+    }
+    .timeline-path-svg { display: none; }
+  }
+
+  /* ===== SCROLLY SECTIONS ===== */
+  .scrolly-section {
+    position: relative;
+    padding: 0;
+  }
+
+  .section-header {
+    text-align: center;
+    padding: 6rem 2rem 3rem;
+  }
+
+  .section-number {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent-gold);
+    margin-bottom: 0.8rem;
+    text-shadow: 0 0 15px rgba(224,148,78,0.3);
+  }
+
+  .section-header h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 700;
+    margin-bottom: 0.8rem;
+  }
+
+  .section-header p {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    max-width: 550px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* ===== DESIGN 1: VINYL DISC SMALL MULTIPLES ===== */
+  .vinyl-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1.2rem;
+    padding: 1rem clamp(1rem, 3vw, 3rem);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .vinyl-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .vinyl-cell.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .vinyl-cell svg {
+    width: 100%;
+    max-width: 170px;
+    cursor: pointer;
+    filter: drop-shadow(0 6px 20px rgba(0,0,0,0.5)) drop-shadow(0 0 8px rgba(226,68,62,0.08));
+    transition: transform 0.3s ease, filter 0.3s ease;
+  }
+
+  .vinyl-cell svg:hover {
+    transform: scale(1.08);
+    filter: drop-shadow(0 10px 28px rgba(0,0,0,0.6)) drop-shadow(0 0 20px rgba(226,68,62,0.15));
+  }
+
+  .vinyl-cell.dimmed {
+    opacity: 0.15 !important;
+    transform: scale(0.92) !important;
+  }
+
+  /* Format Legend — sticky single-line bar */
+  .format-legend {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0.6rem;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    padding: 0.8rem 1.5rem;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(12,10,8,0.88);
+    backdrop-filter: blur(24px) saturate(1.4);
+    -webkit-backdrop-filter: blur(24px) saturate(1.4);
+    border-bottom: 1px solid rgba(255,120,60,0.08);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+
+  .format-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 0.35rem 0.65rem;
+    border-radius: 14px;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+    background: transparent;
+  }
+
+  .format-legend-item:hover {
+    color: var(--text-primary);
+    border-color: rgba(255,140,70,0.18);
+    background: rgba(255,80,40,0.06);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+  }
+
+  .format-legend-item.active {
+    border-color: rgba(255,140,70,0.22);
+    background: rgba(255,80,40,0.10);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    color: var(--text-primary);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3), 0 0 10px rgba(226,68,62,0.08);
+  }
+
+  .format-legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* ===== TRANSITION ===== */
+  .transition-section {
+    padding: 8rem 2rem;
+    text-align: center;
+  }
+
+  .transition-section .big-stat {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(3rem, 8vw, 6rem);
+    font-weight: 700;
+    background: var(--gradient-2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1rem;
+    filter: drop-shadow(0 0 30px rgba(226,68,62,0.3));
+  }
+
+  .transition-section p {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    max-width: 500px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* ===== DESIGN 2: MIXING DESK BUMP CHART ===== */
+  .bump-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem clamp(1rem, 4vw, 4rem);
+  }
+
+  .bump-chart-wrapper {
+    background: linear-gradient(180deg, rgba(30,22,16,0.95) 0%, rgba(16,12,10,0.98) 50%, rgba(10,8,6,0.99) 100%);
+    backdrop-filter: blur(28px) saturate(1.2);
+    -webkit-backdrop-filter: blur(28px) saturate(1.2);
+    border: 1px solid rgba(255,100,50,0.08);
+    border-top: 1px solid rgba(255,140,70,0.12);
+    border-radius: 16px;
+    padding: 2rem;
+    position: relative;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.6), 0 0 60px rgba(226,68,62,0.04), inset 0 1px 0 rgba(255,200,150,0.04);
+  }
+
+  .bump-chart-wrapper svg text { font-family: 'DM Sans', sans-serif; }
+
+  .bump-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.2rem;
+    justify-content: center;
+    margin-top: 1.5rem;
+  }
+
+  .bump-legend .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+  }
+
+  .bump-legend .legend-item:hover { opacity: 1 !important; }
+
+  .bump-legend .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  /* ===== TOOLTIP ===== */
+  .tooltip {
+    position: fixed;
+    pointer-events: none;
+    background: rgba(16,12,10,0.90);
+    backdrop-filter: blur(28px) saturate(1.4);
+    -webkit-backdrop-filter: blur(28px) saturate(1.4);
+    border: 1px solid rgba(255,120,60,0.12);
+    border-radius: 16px;
+    padding: 0.8rem 1rem;
+    font-size: 0.8rem;
+    color: var(--text-primary);
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    max-width: 220px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4), 0 0 15px rgba(226,68,62,0.06);
+  }
+
+  .tooltip.active { opacity: 1; }
+  .tooltip .tt-label { font-weight: 600; margin-bottom: 0.2rem; }
+  .tooltip .tt-value { color: var(--accent-green); font-family: 'Space Grotesk', sans-serif; font-weight: 600; }
+  .tooltip .tt-detail { color: var(--text-muted); font-size: 0.7rem; margin-top: 0.2rem; }
+
+  /* ===== OUTRO ===== */
+  .outro {
+    padding: 6rem 2rem;
+    text-align: center;
+  }
+
+  .outro h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .key-stats {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+    margin: 3rem 0;
+  }
+
+  .stat-card {
+    background: rgba(255,80,40,0.03);
+    backdrop-filter: blur(28px) saturate(1.3);
+    -webkit-backdrop-filter: blur(28px) saturate(1.3);
+    border: 1px solid rgba(255,120,60,0.10);
+    border-radius: 20px;
+    padding: 1.5rem 2rem;
+    min-width: 180px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.35), 0 0 30px rgba(226,68,62,0.03);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+  }
+
+  .stat-card:hover {
+    box-shadow: 0 12px 40px rgba(0,0,0,0.4), 0 0 40px rgba(226,68,62,0.06);
+    transform: translateY(-2px);
+  }
+
+  .stat-card .stat-number {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+  }
+
+  .stat-card .stat-label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-top: 0.3rem;
+  }
+
+  .sources {
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    line-height: 1.8;
+  }
+
+  .sources a { color: var(--text-secondary); text-decoration: none; }
+  .sources a:hover { color: var(--accent-gold); }
+
+  /* ===== SCROLL ANNOTATIONS ===== */
+  .annotation-box {
+    position: absolute;
+    background: rgba(16,12,10,0.85);
+    backdrop-filter: blur(28px) saturate(1.3);
+    -webkit-backdrop-filter: blur(28px) saturate(1.3);
+    border: 1px solid rgba(255,120,60,0.10);
+    border-left: 3px solid var(--accent-gold);
+    padding: 0.8rem 1rem;
+    border-radius: 4px 16px 16px 4px;
+    max-width: 220px;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  }
+
+  .annotation-box.show { opacity: 1; }
+  .annotation-box strong { color: var(--text-primary); }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 600px) {
+    .vinyl-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+    .bump-chart-wrapper { padding: 1rem; }
+    .key-stats { flex-direction: column; align-items: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOOLTIP -->
+<div class="tooltip" id="tooltip">
+  <div class="tt-label"></div>
+  <div class="tt-value"></div>
+  <div class="tt-detail"></div>
+</div>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-eyebrow">Australia's Recorded Music Industry</div>
+    <h1><span class="collapse">Collapse</span> <span class="amp">&</span> <span class="rebirth">Rebirth</span></h1>
+    <p class="hero-sub">From <strong>CD dominance</strong> to <strong>streaming revolution</strong>, how Australia's music market collapsed, transformed, and came back stronger. <strong>2011 to 2023.</strong></p>
+  </div>
+  <div class="scroll-indicator">
+    <span>Scroll to explore</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ===== CONTEXT / ABOUT ===== -->
+<section class="context-section">
+  <h2>What This Dashboard Explores</h2>
+  <p class="context-desc">
+    Between <strong>2011 and 2023</strong>, Australia's recorded music industry went through one of the most dramatic transformations in its history.
+    Physical formats like <strong>CDs</strong> and <strong>digital downloads</strong> collapsed, while <strong>streaming</strong> rose from almost nothing to dominate nearly 90% of all revenue.
+    This dashboard tells that story through two lenses: <strong>how the money moved between formats</strong> inside Australia, and <strong>how Australia's position shifted</strong> on the global stage.
+  </p>
+
+  <div class="timeline" id="serpentine-timeline">
+    <svg class="timeline-path-svg" id="timeline-connector" preserveAspectRatio="none"></svg>
+
+    <div class="timeline-item">
+      <div class="timeline-dot" style="background: var(--accent-red);">01</div>
+      <div class="timeline-content">
+        <div class="tl-year" style="color: var(--accent-red);">2011, The Old Guard</div>
+        <div class="tl-event">CDs still hold 58% of revenue. Downloads are rising. Streaming barely exists at $5M. Australia ranks 6th globally.</div>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot" style="background: var(--accent-orange);">02</div>
+      <div class="timeline-content">
+        <div class="tl-year" style="color: var(--accent-orange);">2013, The Tipping Point</div>
+        <div class="tl-event">Streaming jumps 5x to $52M. Downloads peak and begin their decline. Ringtones start disappearing. The collapse accelerates.</div>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot" style="background: var(--accent-gold);">03</div>
+      <div class="timeline-content">
+        <div class="tl-year" style="color: var(--accent-gold);">2015, Rock Bottom</div>
+        <div class="tl-event">Total revenue hits its lowest point at $334M. The industry hasn't figured out how to monetise digital yet. But streaming is growing fast.</div>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot" style="background: var(--accent-green);">04</div>
+      <div class="timeline-content">
+        <div class="tl-year" style="color: var(--accent-green);">2017, Streaming Takes Over</div>
+        <div class="tl-event">Streaming surges to $350M and becomes the dominant format. Total revenue recovers past $450M. The rebirth begins.</div>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot" style="background: var(--accent-blue);">05</div>
+      <div class="timeline-content">
+        <div class="tl-year" style="color: var(--accent-blue);">2023, New Heights and New Problems</div>
+        <div class="tl-event">Revenue hits $676M, an all-time high. Streaming is 89% of the market. But globally, Australia has slipped out of the top 10, overtaken by Asia.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="context-cards">
+    <div class="context-card" style="border-color: var(--accent-red);">
+      <div class="cc-title">Design 1, Format Revenue</div>
+      <div class="cc-desc">Vinyl disc donut charts showing how each format's share of revenue changed year by year. Source: ARIA Annual Reports.</div>
+    </div>
+    <div class="context-card" style="border-color: var(--accent-blue);">
+      <div class="cc-title">Design 2, Global Rankings</div>
+      <div class="cc-desc">Bump chart tracking Australia's position among the world's top 10 music markets. Source: IFPI Global Music Reports.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== DESIGN 1: FORMAT LIFECYCLES ===== -->
+<section class="scrolly-section" id="design1">
+  <div class="section-header">
+    <div class="section-number">Design 1</div>
+    <h2>The Sound of Change</h2>
+    <p>Each disc spins a year of Australia's music revenue. Seven formats, thirteen years, watch the slices shift from CD red to streaming green. Click a format in the legend to highlight it across every disc.</p>
+  </div>
+  <div class="format-legend" id="format-legend"></div>
+  <div class="vinyl-grid" id="vinyl-grid"></div>
+</section>
+
+<!-- ===== TRANSITION ===== -->
+<section class="transition-section">
+  <div class="big-stat">Falling Behind</div>
+  <p>While formats shifted inside Australia, the country's <strong>global ranking</strong> was quietly slipping. Once the world's <strong>6th-largest</strong> music market, Australia was overtaken by South Korea, China, and Brazil, dropping <strong>out of the top 10</strong> entirely by 2024.</p>
+</section>
+
+<!-- ===== DESIGN 2: BUMP CHART ===== -->
+<section class="scrolly-section" id="design2">
+  <div class="section-header">
+    <div class="section-number">Design 2</div>
+    <h2>Where Does Australia Rank?</h2>
+    <p>Top 10 global recorded music markets by IFPI revenue ranking, 2011 to 2023. Watch as Asia rises and Australia slides.</p>
+  </div>
+  <div class="bump-container">
+    <div class="bump-chart-wrapper">
+      <div id="bump-chart"></div>
+      <div class="bump-legend" id="bump-legend"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== OUTRO ===== -->
+<section class="outro">
+  <h2>The Transformation in Numbers</h2>
+  <div class="key-stats">
+    <div class="stat-card">
+      <div class="stat-number" style="color: var(--accent-red)">$382.7M</div>
+      <div class="stat-label">2011 Revenue<br>CD was 58%</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" style="color: var(--accent-gold)">$333.8M</div>
+      <div class="stat-label">2015 Low Point<br>Rock bottom</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" style="color: var(--accent-green)">$676.1M</div>
+      <div class="stat-label">2023 Revenue<br>Streaming 89%</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" style="color: var(--accent-blue)">+77%</div>
+      <div class="stat-label">Growth from<br>2015 low</div>
+    </div>
+  </div>
+  <div class="sources">
+    <strong>Sources</strong><br>
+    Design 1: <a href="https://www.aria.com.au" target="_blank">ARIA Annual Reports 2011 to 2023</a> · Grossed-up wholesale revenue figures<br>
+    Design 2: <a href="https://www.ifpi.org/our-industry/industry-data/" target="_blank">IFPI Global Music Reports</a> via <a href="https://en.wikipedia.org/wiki/List_of_largest_recorded_music_markets" target="_blank">Wikipedia</a><br><br>
+    DVB302 Assignment 2, Natalia Chamon Kovalenko (n11772638) · QUT 2026
+  </div>
+</section>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+const ariaData = [
+  // [year, format, revenue_aud, format_group]
+  [2011,"CD",222.7,"Physical"],[2011,"Vinyl",4.5,"Physical"],[2011,"Downloads",125.5,"Digital"],[2011,"Ringtones",8.2,"Digital"],[2011,"Streaming",5.4,"Streaming"],[2011,"Music Video",10.2,"Digital"],[2011,"Other",6.2,"Other"],
+  [2012,"CD",190.0,"Physical"],[2012,"Vinyl",5.1,"Physical"],[2012,"Downloads",143.0,"Digital"],[2012,"Ringtones",5.0,"Digital"],[2012,"Streaming",10.5,"Streaming"],[2012,"Music Video",8.5,"Digital"],[2012,"Other",36.0,"Other"],
+  [2013,"CD",141.0,"Physical"],[2013,"Vinyl",5.5,"Physical"],[2013,"Downloads",110.0,"Digital"],[2013,"Ringtones",3.0,"Digital"],[2013,"Streaming",52.0,"Streaming"],[2013,"Music Video",6.1,"Digital"],[2013,"Other",34.0,"Other"],
+  [2014,"CD",102.0,"Physical"],[2014,"Vinyl",6.5,"Physical"],[2014,"Downloads",85.0,"Digital"],[2014,"Ringtones",1.5,"Digital"],[2014,"Streaming",87.0,"Streaming"],[2014,"Music Video",4.8,"Digital"],[2014,"Other",31.0,"Other"],
+  [2015,"CD",75.0,"Physical"],[2015,"Vinyl",8.0,"Physical"],[2015,"Downloads",65.0,"Digital"],[2015,"Ringtones",0.5,"Digital"],[2015,"Streaming",145.0,"Streaming"],[2015,"Music Video",3.3,"Digital"],[2015,"Other",37.0,"Other"],
+  [2016,"CD",55.0,"Physical"],[2016,"Vinyl",10.0,"Physical"],[2016,"Downloads",45.0,"Digital"],[2016,"Ringtones",0.2,"Digital"],[2016,"Streaming",205.0,"Streaming"],[2016,"Music Video",2.0,"Digital"],[2016,"Other",35.0,"Other"],
+  [2017,"CD",38.0,"Physical"],[2017,"Vinyl",12.0,"Physical"],[2017,"Downloads",30.0,"Digital"],[2017,"Ringtones",0,"Digital"],[2017,"Streaming",350.0,"Streaming"],[2017,"Music Video",1.5,"Digital"],[2017,"Other",37.2,"Other"],
+  [2018,"CD",28.0,"Physical"],[2018,"Vinyl",15.0,"Physical"],[2018,"Downloads",18.0,"Digital"],[2018,"Ringtones",0,"Digital"],[2018,"Streaming",435.0,"Streaming"],[2018,"Music Video",1.0,"Digital"],[2018,"Other",29.1,"Other"],
+  [2019,"CD",22.0,"Physical"],[2019,"Vinyl",17.0,"Physical"],[2019,"Downloads",12.0,"Digital"],[2019,"Ringtones",0,"Digital"],[2019,"Streaming",430.0,"Streaming"],[2019,"Music Video",0.8,"Digital"],[2019,"Other",23.3,"Other"],
+  [2020,"CD",18.0,"Physical"],[2020,"Vinyl",19.0,"Physical"],[2020,"Downloads",8.0,"Digital"],[2020,"Ringtones",0,"Digital"],[2020,"Streaming",475.0,"Streaming"],[2020,"Music Video",0.5,"Digital"],[2020,"Other",21.5,"Other"],
+  [2021,"CD",16.0,"Physical"],[2021,"Vinyl",21.0,"Physical"],[2021,"Downloads",6.0,"Digital"],[2021,"Ringtones",0,"Digital"],[2021,"Streaming",498.0,"Streaming"],[2021,"Music Video",0.3,"Digital"],[2021,"Other",24.5,"Other"],
+  [2022,"CD",15.5,"Physical"],[2022,"Vinyl",23.0,"Physical"],[2022,"Downloads",5.0,"Digital"],[2022,"Ringtones",0,"Digital"],[2022,"Streaming",540.0,"Streaming"],[2022,"Music Video",0.2,"Digital"],[2022,"Other",25.9,"Other"],
+  [2023,"CD",17.0,"Physical"],[2023,"Vinyl",25.0,"Physical"],[2023,"Downloads",16.0,"Digital"],[2023,"Ringtones",0,"Digital"],[2023,"Streaming",599.0,"Streaming"],[2023,"Music Video",0.1,"Digital"],[2023,"Other",19.0,"Other"],
+];
+
+const ifpiData = [
+  {country:"United States",ranks:[1,1,1,1,1,1,1,1,1,1,1,1,1],color:"#6B6858"},
+  {country:"Japan",ranks:[2,2,2,2,2,2,2,2,2,2,2,2,2],color:"#6B6858"},
+  {country:"United Kingdom",ranks:[4,3,4,4,3,3,4,3,3,3,3,3,3],color:"#8A8474"},
+  {country:"Germany",ranks:[3,4,3,3,4,4,3,4,4,4,4,4,4],color:"#8A8474"},
+  {country:"France",ranks:[5,5,5,5,5,5,5,5,5,5,5,6,6],color:"#8A8474"},
+  {country:"Australia",ranks:[6,6,6,6,6,7,8,8,9,9,9,10,10],color:"#3690A4"},
+  {country:"Canada",ranks:[7,7,7,7,7,6,7,9,8,8,8,8,8],color:"#8A8474"},
+  {country:"South Korea",ranks:[null,null,10,8,8,8,6,6,6,6,7,7,7],color:"#E0944E"},
+  {country:"China",ranks:[null,null,null,null,null,null,10,7,7,7,6,5,5],color:"#E26460"},
+  {country:"Brazil",ranks:[10,8,9,9,10,null,9,10,10,null,null,9,9],color:"#6B6858"},
+];
+
+const years = d3.range(2011, 2024);
+
+const formatMeta = {
+  "CD": { color: "#E26460", story: "From king to relic, CD's 13-year decline from $223M to $17M.", peakYear: 2011, peakVal: 222.7 },
+  "Streaming": { color: "#3690A4", story: "The unstoppable rise, from $5M to $599M in 12 years.", peakYear: 2023, peakVal: 599.0 },
+  "Downloads": { color: "#E0944E", story: "A brief reign killed by streaming, peaked at $143M then vanished.", peakYear: 2012, peakVal: 143.0 },
+  "Vinyl": { color: "#EFEAD8", story: "The nostalgia comeback, small but growing and a collector's niche.", peakYear: 2023, peakVal: 25.0 },
+  "Ringtones": { color: "#C47A5A", story: "Remember ringtones? Gone by 2017. Completely extinct.", peakYear: 2011, peakVal: 8.2 },
+  "Music Video": { color: "#5BB0C4", story: "Once a $10M market. Now virtually zero as YouTube took over.", peakYear: 2011, peakVal: 10.2 },
+  "Other": { color: "#8A8474", story: "Sync, performance rights, and miscellaneous, steady background revenue.", peakYear: 2012, peakVal: 36.0 }
+};
+
+const formatOrder = ["Streaming","CD","Downloads","Vinyl","Other","Music Video","Ringtones"];
+
+// ============================================================
+// TOOLTIP HELPER
+// ============================================================
+const tooltip = document.getElementById('tooltip');
+function showTooltip(e, label, value, detail) {
+  tooltip.querySelector('.tt-label').textContent = label;
+  tooltip.querySelector('.tt-value').textContent = value;
+  tooltip.querySelector('.tt-detail').textContent = detail || '';
+  tooltip.classList.add('active');
+  tooltip.style.left = (e.clientX + 15) + 'px';
+  tooltip.style.top = (e.clientY - 10) + 'px';
+}
+function hideTooltip() { tooltip.classList.remove('active'); }
+
+// ============================================================
+// DESIGN 1: VINYL DISC DONUT SMALL MULTIPLES
+// ============================================================
+function buildVinylMultiples() {
+  const grid = document.getElementById('vinyl-grid');
+  const legendEl = document.getElementById('format-legend');
+  let selectedFormat = null;
+
+  const size = 210;
+  const cx = size / 2, cy = size / 2;
+  const outerR = size / 2 - 4;    // outer edge of disc
+  const grooveStart = outerR - 6;  // where grooves begin (inside rim)
+  const innerR = outerR * 0.33;    // center label radius
+  const donutInner = innerR + 4;   // donut data starts here
+  const donutOuter = grooveStart - 2; // donut data ends here
+
+  const pie = d3.pie().value(d => d.revenue).sort(null);
+  const arc = d3.arc().innerRadius(donutInner).outerRadius(donutOuter);
+  const arcHover = d3.arc().innerRadius(donutInner - 2).outerRadius(donutOuter + 4);
+
+  // Group data by year
+  const yearGroups = d3.group(ariaData, d => d[0]);
+
+  years.forEach((year, yi) => {
+    const cell = document.createElement('div');
+    cell.className = 'vinyl-cell';
+    cell.style.transitionDelay = (yi * 0.06) + 's';
+    cell.dataset.year = year;
+    grid.appendChild(cell);
+
+    const rawData = yearGroups.get(year);
+    const slices = formatOrder.map(fmt => {
+      const row = rawData.find(d => d[1] === fmt);
+      return { format: fmt, revenue: row ? row[2] : 0, color: formatMeta[fmt].color };
+    });
+    const total = d3.sum(slices, d => d.revenue);
+
+    const svg = d3.select(cell).append('svg')
+      .attr('viewBox', `0 0 ${size} ${size}`)
+      .attr('preserveAspectRatio', 'xMidYMid meet');
+
+    const defs = svg.append('defs');
+
+    // Disc base gradient (dark vinyl)
+    const discGrad = defs.append('radialGradient')
+      .attr('id', `disc-grad-${year}`)
+      .attr('cx', '40%').attr('cy', '35%').attr('r', '65%');
+    discGrad.append('stop').attr('offset', '0%').attr('stop-color', '#2a2218');
+    discGrad.append('stop').attr('offset', '50%').attr('stop-color', '#181210');
+    discGrad.append('stop').attr('offset', '100%').attr('stop-color', '#0e0a08');
+
+    // Gloss highlight
+    const glossGrad = defs.append('radialGradient')
+      .attr('id', `gloss-${year}`)
+      .attr('cx', '35%').attr('cy', '30%').attr('r', '50%');
+    glossGrad.append('stop').attr('offset', '0%').attr('stop-color', 'rgba(255,200,140,0.14)');
+    glossGrad.append('stop').attr('offset', '60%').attr('stop-color', 'rgba(255,150,80,0.03)');
+    glossGrad.append('stop').attr('offset', '100%').attr('stop-color', 'rgba(255,100,50,0)');
+
+    // Center label gradient
+    const labelGrad = defs.append('radialGradient')
+      .attr('id', `label-grad-${year}`)
+      .attr('cx', '45%').attr('cy', '40%').attr('r', '55%');
+    labelGrad.append('stop').attr('offset', '0%').attr('stop-color', '#F0DFC0');
+    labelGrad.append('stop').attr('offset', '100%').attr('stop-color', '#D4C4A0');
+
+    const g = svg.append('g').attr('transform', `translate(${cx},${cy})`);
+
+    // Outer disc body
+    g.append('circle').attr('r', outerR).attr('fill', `url(#disc-grad-${year})`).attr('stroke', '#222').attr('stroke-width', 0.5);
+
+    // Outer rim ring
+    g.append('circle').attr('r', outerR).attr('fill', 'none').attr('stroke', '#333').attr('stroke-width', 1.5);
+    g.append('circle').attr('r', outerR - 3).attr('fill', 'none').attr('stroke', '#282828').attr('stroke-width', 0.5);
+
+    // Groove rings (vinyl realism)
+    const numGrooves = 16;
+    for (let i = 0; i < numGrooves; i++) {
+      const r = donutInner + (donutOuter - donutInner) * (i / numGrooves);
+      g.append('circle')
+        .attr('r', r)
+        .attr('fill', 'none')
+        .attr('stroke', 'rgba(255,255,255,0.03)')
+        .attr('stroke-width', 0.4);
+    }
+
+    // Donut slices (the data!)
+    const pieData = pie(slices);
+    g.selectAll('.slice')
+      .data(pieData)
+      .join('path')
+      .attr('d', arc)
+      .attr('fill', d => d.data.color)
+      .attr('stroke', '#0e0a08')
+      .attr('stroke-width', 1)
+      .attr('opacity', 0.85)
+      .attr('class', d => `slice slice-${d.data.format.replace(/\s/g,'-')}`)
+      .on('mouseenter', function(event, d) {
+        d3.select(this).transition().duration(150).attr('d', arcHover).attr('opacity', 1);
+        const pct = ((d.data.revenue / total) * 100).toFixed(1);
+        showTooltip(event, `${d.data.format} · ${year}`, `$${d.data.revenue.toFixed(1)}M AUD`, `${pct}% of total`);
+      })
+      .on('mousemove', function(event) {
+        tooltip.style.left = (event.clientX + 15) + 'px';
+        tooltip.style.top = (event.clientY - 10) + 'px';
+      })
+      .on('mouseleave', function(event, d) {
+        d3.select(this).transition().duration(150).attr('d', arc).attr('opacity', 0.85);
+        hideTooltip();
+      });
+
+    // Gloss overlay (realistic shine)
+    g.append('circle').attr('r', outerR - 1).attr('fill', `url(#gloss-${year})`).attr('pointer-events', 'none');
+
+    // Center label circle
+    g.append('circle').attr('r', innerR).attr('fill', `url(#label-grad-${year})`).attr('stroke', '#aaa').attr('stroke-width', 0.5);
+
+    // Center spindle hole
+    g.append('circle').attr('r', 4).attr('fill', '#0c0a08').attr('stroke', '#5a4a3a').attr('stroke-width', 0.5);
+
+    // Year text
+    g.append('text')
+      .attr('y', -6)
+      .attr('text-anchor', 'middle')
+      .attr('font-family', 'Space Grotesk, sans-serif')
+      .attr('font-size', '16px')
+      .attr('font-weight', '700')
+      .attr('fill', '#1a1a1a')
+      .text(year);
+
+    // Total revenue text
+    g.append('text')
+      .attr('y', 12)
+      .attr('text-anchor', 'middle')
+      .attr('font-family', 'DM Sans, sans-serif')
+      .attr('font-size', '9px')
+      .attr('font-weight', '500')
+      .attr('fill', '#555')
+      .text(`$${total.toFixed(0)}M`);
+  });
+
+  // Build format legend (clickable)
+  formatOrder.forEach(fmt => {
+    const item = document.createElement('div');
+    item.className = 'format-legend-item';
+    item.dataset.format = fmt;
+    item.innerHTML = `<div class="format-legend-dot" style="background:${formatMeta[fmt].color}"></div>${fmt}`;
+    item.addEventListener('click', () => {
+      if (selectedFormat === fmt) {
+        selectedFormat = null;
+        item.classList.remove('active');
+        // Reset all
+        document.querySelectorAll('.vinyl-cell').forEach(c => c.classList.remove('dimmed'));
+        document.querySelectorAll('.slice').forEach(s => { s.style.opacity = ''; s.style.filter = ''; });
+        document.querySelectorAll('.format-legend-item').forEach(li => li.classList.remove('active'));
+      } else {
+        selectedFormat = fmt;
+        document.querySelectorAll('.format-legend-item').forEach(li => li.classList.remove('active'));
+        item.classList.add('active');
+        // Highlight selected format's slices, dim others
+        document.querySelectorAll('.slice').forEach(s => {
+          const isMatch = s.classList.contains(`slice-${fmt.replace(/\s/g,'-')}`);
+          s.style.opacity = isMatch ? '1' : '0.1';
+          s.style.filter = isMatch ? 'brightness(1.3)' : '';
+        });
+      }
+    });
+    legendEl.appendChild(item);
+  });
+
+  // Intersection observer for vinyl cell reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('visible');
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.vinyl-cell').forEach(cell => observer.observe(cell));
+}
+
+// ============================================================
+// DESIGN 2: BUMP CHART
+// ============================================================
+function buildBumpChart() {
+  const container = document.getElementById('bump-chart');
+  const margin = { top: 30, right: 120, bottom: 55, left: 45 };
+  const fullWidth = Math.min(900, window.innerWidth - 80);
+  const fullHeight = 460;
+  const width = fullWidth - margin.left - margin.right;
+  const height = fullHeight - margin.top - margin.bottom;
+
+  const svg = d3.select(container).append('svg')
+    .attr('viewBox', `0 0 ${fullWidth} ${fullHeight}`)
+    .attr('preserveAspectRatio', 'xMidYMid meet');
+
+  // Defs for fader knob gradient and glow
+  const defs = svg.append('defs');
+
+  // Fader track groove gradient (inset look)
+  const trackGrad = defs.append('linearGradient').attr('id','faderTrackGrad').attr('x1','0').attr('y1','0').attr('x2','1').attr('y2','0');
+  trackGrad.append('stop').attr('offset','0%').attr('stop-color','#0a0a08');
+  trackGrad.append('stop').attr('offset','30%').attr('stop-color','#1a1a16');
+  trackGrad.append('stop').attr('offset','70%').attr('stop-color','#1a1a16');
+  trackGrad.append('stop').attr('offset','100%').attr('stop-color','#0a0a08');
+
+  // Fader knob metallic gradient
+  const knobGrad = defs.append('linearGradient').attr('id','knobGrad').attr('x1','0').attr('y1','0').attr('x2','0').attr('y2','1');
+  knobGrad.append('stop').attr('offset','0%').attr('stop-color','#555');
+  knobGrad.append('stop').attr('offset','40%').attr('stop-color','#3a3a3a');
+  knobGrad.append('stop').attr('offset','60%').attr('stop-color','#2a2a2a');
+  knobGrad.append('stop').attr('offset','100%').attr('stop-color','#1a1a1a');
+
+  // Glow filter for highlighted knobs
+  const glow = defs.append('filter').attr('id','knobGlow').attr('x','-50%').attr('y','-50%').attr('width','200%').attr('height','200%');
+  glow.append('feGaussianBlur').attr('in','SourceGraphic').attr('stdDeviation','4').attr('result','blur');
+  const merge = glow.append('feMerge');
+  merge.append('feMergeNode').attr('in','blur');
+  merge.append('feMergeNode').attr('in','SourceGraphic');
+
+  const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
+
+  const x = d3.scalePoint().domain(years).range([0, width]).padding(0.1);
+  const y = d3.scaleLinear().domain([1, 11]).range([0, height]);
+
+  const trackWidth = 6;
+  const knobWidth = 22;
+  const knobHeight = 12;
+
+  // ── FADER TRACKS (vertical grooves for each year) ──
+  years.forEach(yr => {
+    const cx = x(yr);
+    // Track groove
+    g.append('rect')
+      .attr('x', cx - trackWidth/2).attr('y', y(1) - 10)
+      .attr('width', trackWidth).attr('height', y(10) - y(1) + 20)
+      .attr('rx', 3).attr('ry', 3)
+      .attr('fill', 'url(#faderTrackGrad)')
+      .attr('stroke', 'rgba(255,255,255,0.03)')
+      .attr('stroke-width', 0.5);
+    // Track center line
+    g.append('line')
+      .attr('x1', cx).attr('x2', cx)
+      .attr('y1', y(1) - 8).attr('y2', y(10) + 8)
+      .attr('stroke', 'rgba(255,255,255,0.06)').attr('stroke-width', 0.5);
+  });
+
+  // ── RANK MARKINGS (horizontal tick marks on tracks) ──
+  for (let r = 1; r <= 10; r++) {
+    // Subtle horizontal reference line
+    g.append('line')
+      .attr('x1', 0).attr('x2', width)
+      .attr('y1', y(r)).attr('y2', y(r))
+      .attr('stroke', 'rgba(255,255,255,0.04)').attr('stroke-width', 0.5);
+
+    // Rank label
+    g.append('text')
+      .attr('x', -14).attr('y', y(r) + 4)
+      .attr('text-anchor', 'end')
+      .attr('fill', r <= 3 ? '#6B6858' : '#444').attr('font-size', '10px')
+      .attr('font-weight', r === 1 ? '600' : '400')
+      .text('#' + r);
+
+    // Small tick marks on each track at each rank
+    years.forEach(yr => {
+      g.append('line')
+        .attr('x1', x(yr) - 5).attr('x2', x(yr) + 5)
+        .attr('y1', y(r)).attr('y2', y(r))
+        .attr('stroke', 'rgba(255,255,255,0.06)').attr('stroke-width', 0.5);
+    });
+  }
+
+  // ── CHANNEL STRIP LABELS (bottom, styled like a mixer) ──
+  years.forEach(yr => {
+    const cx = x(yr);
+    // Channel label background
+    g.append('rect')
+      .attr('x', cx - 18).attr('y', height + 14)
+      .attr('width', 36).attr('height', 20)
+      .attr('rx', 4).attr('ry', 4)
+      .attr('fill', 'rgba(255,255,255,0.03)')
+      .attr('stroke', 'rgba(255,255,255,0.06)')
+      .attr('stroke-width', 0.5);
+    g.append('text')
+      .attr('x', cx).attr('y', height + 28)
+      .attr('text-anchor', 'middle')
+      .attr('fill', '#888').attr('font-size', '10px')
+      .text("'" + String(yr).slice(2));
+  });
+
+  let selectedCountry = null;
+
+  // ── DRAW LINES AND FADER KNOBS ──
+  ifpiData.forEach(country => {
+    const points = [];
+    years.forEach((yr, i) => {
+      const rank = country.ranks[i];
+      if (rank !== null) points.push({ year: yr, rank, idx: i });
+    });
+
+    const isAustralia = country.country === 'Australia';
+    const isRiser = ['South Korea', 'China'].includes(country.country);
+    const lineColor = country.color;
+    const lineWidth = isAustralia ? 3.5 : isRiser ? 2 : 1;
+    const lineOpacity = isAustralia ? 0.9 : isRiser ? 0.6 : 0.15;
+
+    const lineGen = d3.line()
+      .x(d => x(d.year))
+      .y(d => y(d.rank))
+      .curve(d3.curveMonotoneX);
+
+    // Split into continuous segments
+    const segments = [];
+    let current = [];
+    points.forEach((p, i) => {
+      current.push(p);
+      if (i < points.length - 1 && points[i+1].idx - p.idx > 1) {
+        segments.push(current);
+        current = [];
+      }
+    });
+    if (current.length > 0) segments.push(current);
+
+    segments.forEach(seg => {
+      g.append('path')
+        .datum(seg)
+        .attr('d', lineGen)
+        .attr('fill', 'none')
+        .attr('stroke', lineColor)
+        .attr('stroke-width', lineWidth)
+        .attr('opacity', lineOpacity)
+        .attr('class', `bump-line bump-${country.country.replace(/\s/g,'-')}`)
+        .attr('stroke-linecap', 'round');
+    });
+
+    // ── FADER KNOBS instead of dots ──
+    points.forEach(p => {
+      const cx = x(p.year);
+      const cy = y(p.rank);
+      const showKnob = isAustralia || isRiser;
+
+      if (showKnob) {
+        const kw = isAustralia ? knobWidth : knobWidth - 4;
+        const kh = isAustralia ? knobHeight : knobHeight - 2;
+
+        // Knob shadow
+        g.append('rect')
+          .attr('x', cx - kw/2 + 1).attr('y', cy - kh/2 + 1)
+          .attr('width', kw).attr('height', kh)
+          .attr('rx', 3).attr('ry', 3)
+          .attr('fill', 'rgba(0,0,0,0.4)')
+          .attr('class', `bump-dot bump-${country.country.replace(/\s/g,'-')}`);
+
+        // Knob body
+        const knob = g.append('rect')
+          .attr('x', cx - kw/2).attr('y', cy - kh/2)
+          .attr('width', kw).attr('height', kh)
+          .attr('rx', 3).attr('ry', 3)
+          .attr('fill', 'url(#knobGrad)')
+          .attr('stroke', lineColor)
+          .attr('stroke-width', isAustralia ? 1.5 : 1)
+          .attr('opacity', isAustralia ? 1 : 0.8)
+          .attr('class', `bump-dot bump-${country.country.replace(/\s/g,'-')}`);
+
+        if (isAustralia) knob.attr('filter', 'url(#knobGlow)');
+
+        // Knob center line (grip detail)
+        g.append('line')
+          .attr('x1', cx - 4).attr('x2', cx + 4)
+          .attr('y1', cy).attr('y2', cy)
+          .attr('stroke', lineColor)
+          .attr('stroke-width', 0.8)
+          .attr('opacity', isAustralia ? 0.7 : 0.5)
+          .attr('class', `bump-dot bump-${country.country.replace(/\s/g,'-')}`);
+      }
+
+      // Invisible hover target
+      g.append('rect')
+        .attr('x', cx - 14).attr('y', cy - 10)
+        .attr('width', 28).attr('height', 20)
+        .attr('fill', 'transparent')
+        .attr('cursor', 'pointer')
+        .on('mouseenter', function(event) {
+          showTooltip(event, country.country, `Rank #${p.rank}`, `${p.year} · IFPI Global Music Report`);
+        })
+        .on('mousemove', function(event) {
+          tooltip.style.left = (event.clientX + 15) + 'px';
+          tooltip.style.top = (event.clientY - 10) + 'px';
+        })
+        .on('mouseleave', hideTooltip);
+    });
+
+    // End label
+    const lastPoint = points[points.length - 1];
+    g.append('text')
+      .attr('x', x(lastPoint.year) + 16)
+      .attr('y', y(lastPoint.rank) + 4)
+      .attr('fill', lineColor)
+      .attr('font-size', isAustralia ? '11px' : '9px')
+      .attr('font-weight', isAustralia || isRiser ? '600' : '400')
+      .attr('opacity', isAustralia ? 1 : isRiser ? 0.9 : 0.5)
+      .attr('class', `bump-label bump-${country.country.replace(/\s/g,'-')}`)
+      .text(country.country === 'South Korea' ? 'S. Korea' : country.country);
+  });
+
+  // Australia "2024: OUT" annotation
+  const auLast = y(10);
+  g.append('line')
+    .attr('x1', x(2023) + 5).attr('y1', auLast + 5)
+    .attr('x2', x(2023) + 30).attr('y2', auLast + 30)
+    .attr('stroke', '#3690A4').attr('stroke-width', 1).attr('stroke-dasharray','3,2');
+
+  g.append('text')
+    .attr('x', x(2023) + 32).attr('y', auLast + 35)
+    .attr('fill', '#3690A4').attr('font-size', '9px').attr('font-weight','600')
+    .text('2024: OUT of top 10');
+
+  // Legend
+  const legendData = [
+    { country: 'Australia', color: '#3690A4', desc: '(focus)' },
+    { country: 'China', color: '#E26460', desc: '(rising)' },
+    { country: 'South Korea', color: '#E0944E', desc: '(rising)' },
+    { country: 'Others', color: '#8A8474', desc: '' },
+  ];
+
+  const legend = document.getElementById('bump-legend');
+  legendData.forEach(item => {
+    const el = document.createElement('div');
+    el.className = 'legend-item';
+    el.innerHTML = `<div class="legend-dot" style="background:${item.color}"></div>${item.country} <span style="color:#666">${item.desc}</span>`;
+    legend.appendChild(el);
+  });
+}
+
+// ============================================================
+// INIT
+// ============================================================
+// Timeline reveal
+const tlObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) entry.target.classList.add('visible');
+  });
+}, { threshold: 0.2 });
+document.querySelectorAll('.timeline-item').forEach(item => tlObserver.observe(item));
+
+// Draw serpentine connector path between timeline dots
+function drawTimelinePath() {
+  const timeline = document.getElementById('serpentine-timeline');
+  const svg = document.getElementById('timeline-connector');
+  if (!timeline || !svg) return;
+
+  const dots = timeline.querySelectorAll('.timeline-dot');
+  if (dots.length < 2) return;
+
+  const rect = timeline.getBoundingClientRect();
+  svg.setAttribute('width', rect.width);
+  svg.setAttribute('height', rect.height);
+  svg.style.width = rect.width + 'px';
+  svg.style.height = rect.height + 'px';
+
+  // Get center of each dot relative to the timeline container
+  const centers = Array.from(dots).map(dot => {
+    const dr = dot.getBoundingClientRect();
+    return {
+      x: dr.left - rect.left + dr.width / 2,
+      y: dr.top - rect.top + dr.height / 2,
+    };
+  });
+
+  // Build smooth S-curve path through all centers
+  let d = `M ${centers[0].x} ${centers[0].y}`;
+  for (let i = 0; i < centers.length - 1; i++) {
+    const curr = centers[i];
+    const next = centers[i + 1];
+    const midY = (curr.y + next.y) / 2;
+    // Cubic bezier that curves out horizontally then back
+    d += ` C ${curr.x} ${midY}, ${next.x} ${midY}, ${next.x} ${next.y}`;
+  }
+
+  svg.innerHTML = `<path d="${d}" />`;
+}
+
+// Draw path after layout settles
+setTimeout(drawTimelinePath, 500);
+window.addEventListener('resize', drawTimelinePath);
+
+buildVinylMultiples();
+buildBumpChart();
+</script>
+</body>
+</html>
